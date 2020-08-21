@@ -1,0 +1,17 @@
+apiVersion: tekton.dev/v1alpha1
+kind: Task
+metadata:
+  name: test-package-java
+spec:
+  inputs:
+    resources:
+      - name: resource-git-petclinic
+        type: git
+  steps:
+    - name: test
+      image: maven:3.6.3-jdk-11
+      workingDir: /app
+      command:
+        - mvn
+      args:
+        - verify
