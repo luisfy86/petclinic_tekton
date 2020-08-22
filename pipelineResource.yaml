@@ -9,3 +9,5 @@ spec:
       value: master
     - name: url
       value: https://github.com/luisfy86/petclinic_tekton.git
+    - name: sslVerify
+      value: "false"

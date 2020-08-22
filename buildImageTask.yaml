@@ -1,0 +1,28 @@
+apiVersion: tekton.dev/v1alpha1
+kind: Task
+metadata:
+  name: build-image
+spec:
+  steps:
+    - name: scan
+      image: maven:3.6.3-jdk-11
+      workingDir: /workspace
+      command:
+        - ls
+      args:
+        - -la
+        - .
+    - name: build-image
+      image: gcr.io/kaniko-project/executor:debug-v0.18.0
+      workingDir: $(workspaces.src.path)
+      env:
+        - name: DOCKER_CONFIG
+          value: /tekton/home/.docker
+      command:
+        - /kaniko/executor
+        - --dockerfile=./Dockerfile
+        - --context=./
+        - --no-push
+  workspaces:
+    - name: src
+        

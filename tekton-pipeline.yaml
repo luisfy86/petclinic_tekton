@@ -1,0 +1,29 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: petclinic-pipeline
+spec:
+  workspaces:
+    - name: pipeline-ws1
+  resources:
+    - name: resource-git-petclinic
+      type: git
+  tasks:
+    - name: test-package
+      taskRef:
+        name: test-package-java
+      resources:
+        inputs:
+          - name: resource-git-petclinic
+            resource: resource-git-petclinic
+      workspaces:
+        - name: output
+          workspace: pipeline-ws1
+    - name: build-image
+      taskRef:
+        name: build-image
+      runAfter:
+        - test-package
+      workspaces:
+        - name: src
+          workspace: pipeline-ws1

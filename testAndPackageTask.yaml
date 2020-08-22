@@ -3,15 +3,42 @@ kind: Task
 metadata:
   name: test-package-java
 spec:
-  inputs:
-    resources:
+  resources:
+    inputs:
       - name: resource-git-petclinic
         type: git
   steps:
+    - name: scan
+      image: maven:3.6.3-jdk-11
+      workingDir: /workspace
+      command:
+        - ls
+      args:
+        - -la
+        - $(workspaces.output.path)
     - name: test
       image: maven:3.6.3-jdk-11
-      workingDir: /app
+      workingDir: /workspace/resource-git-petclinic
       command:
         - mvn
       args:
         - verify
+    - name: package
+      image: maven:3.6.3-jdk-11
+      workingDir: /workspace/resource-git-petclinic
+      command:
+        - mvn
+      args:
+        - clean
+        - package
+    - name: copy
+      image: maven:3.6.3-jdk-11
+      workingDir: /workspace/resource-git-petclinic
+      script: |
+        #!/usr/bin/env bash
+        ls -la
+        cp -r . $(workspaces.output.path)
+        ls -la $(workspaces.output.path)
+  workspaces:
+    - name: output
+        

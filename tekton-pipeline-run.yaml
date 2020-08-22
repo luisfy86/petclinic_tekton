@@ -1,0 +1,20 @@
+apiVersion: tekton.dev/v1beta1
+kind: PipelineRun
+metadata:
+  generateName: petclinic-pipeline-run-
+spec:
+  pipelineRef:
+    name: petclinic-pipeline
+  workspaces:
+  - name: pipeline-ws1
+    volumeClaimTemplate:
+        spec:
+          accessModes:
+            - ReadWriteOnce # access mode may affect how you can use this volume in parallel tasks
+          resources:
+            requests:
+              storage: 1Gi
+  resources:
+  - name: resource-git-petclinic
+    resourceRef:
+      name: resource-git-petclinic   
